@@ -1,0 +1,1 @@
+print("Stock bot started")

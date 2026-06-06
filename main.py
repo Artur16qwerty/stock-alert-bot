@@ -20,12 +20,12 @@ for symbol, alert_percent in SYMBOLS.items():
     url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_KEY}"
     data = requests.get(url).json()
 
-    price = data["c"]
-    change_percent = data["dp"]
+    price = data.get("c")
+    change_percent = data.get("dp")
 
     print(symbol, price, change_percent)
 
-    if abs(change_percent) >= alert_percent:
+    if price and change_percent is not None and abs(change_percent) >= alert_percent:
         if change_percent > 0:
             text = f"🚀 {symbol} выросла на {change_percent:.2f}%\nЦена: ${price}"
         else:

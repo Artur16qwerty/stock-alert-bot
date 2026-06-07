@@ -6,6 +6,10 @@ TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 CHAT_ID = os.environ["CHAT_ID"]
 FINNHUB_KEY = os.environ["FINNHUB_KEY"]
 
+print("TOKEN LENGTH:", len(TELEGRAM_TOKEN))
+print("TOKEN START:", TELEGRAM_TOKEN[:10])
+print("TOKEN HAS COLON:", ":" in TELEGRAM_TOKEN)
+
 SYMBOLS = [
     "AAPL",
     "NVDA",

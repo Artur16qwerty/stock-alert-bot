@@ -68,6 +68,8 @@ for symbol in SYMBOLS:
 
 send_url = "https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage"
 
+print(send_url)
+
 r = requests.post(send_url, data={
     "chat_id": CHAT_ID,
     "text": message

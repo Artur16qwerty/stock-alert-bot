@@ -5,25 +5,58 @@ TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 CHAT_ID = os.environ["CHAT_ID"]
 FINNHUB_KEY = os.environ["FINNHUB_KEY"]
 
-SYMBOLS = {"TSLA": 5,"NVDA": 5,"AAPL": 5,}
+SYMBOLS = [
+    "AAPL",
+    "NVDA",
+    "NVD.DE",
+    "9MW.HA",
+    "INL.DE",
+    "AMD",
+    "NBIS",
+    "NOKIA.HE",
+    "IBM",
+    "MU",
+    "QCI.DE",
+    "SSUN.F",
+    "DELL",
+]
 
-def send_message(text):
-    url = "https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage"
-    requests.post(url, data={"chat_id": CHAT_ID, "text": text})
+message = "📊 Обновление акций:\n\n"
 
-for symbol, alert_percent in SYMBOLS.items():
+for symbol in SYMBOLS:
     url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_KEY}"
     data = requests.get(url).json()
 
     price = data.get("c")
+    change_sum = data.get("d")
     change_percent = data.get("dp")
 
-    print(symbol, price, change_percent)
+    if price is None or change_sum is None or change_percent is None:
+        message += f"⚠️ {symbol}: нет данных\n\n"
+        continue
 
-    if price and change_percent is not None and abs(change_percent) >= alert_percent:
-        if change_percent > 0:
-            text = f"🚀 {symbol} выросла на {change_percent:.2f}%\nЦена: ${price}"
-        else:
-            text = f"🔻 {symbol} упала на {change_percent:.2f}%\nЦена: ${price}"
+    if change_sum > 0:
+        icon = "🟢"
+        word = "выросла"
+        sign = "+"
+    elif change_sum < 0:
+        icon = "🔴"
+        word = "упала"
+        sign = ""
+    else:
+        icon = "⚪"
+        word = "без изменений"
+        sign = ""
 
-        send_message(text)
+    message += (
+        f"{icon} {symbol}\n"
+        f"Цена: {price}\n"
+        f"{word}: {sign}{change_sum:.2f} / {sign}{change_percent:.2f}%\n\n"
+    )
+
+send_url = "https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage"
+
+requests.post(send_url, data={
+    "chat_id": CHAT_ID,
+    "text": message
+})

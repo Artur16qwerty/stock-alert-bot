@@ -68,3 +68,56 @@ requests.post(send_url, data={
     "chat_id": CHAT_ID,
     "text": message
 })
+
+CRYPTO_SYMBOLS = [
+    "BINANCE:BTCUSDT",
+    "BINANCE:ETHUSDT",
+    "BINANCE:SOLUSDT",
+    "BINANCE:XRPUSDT",
+    "BINANCE:DOGEUSDT",
+]
+
+crypto_message = f"₿ ОБНОВЛЕНИЕ КРИПТЫ\n🕒 {now}\n\n"
+
+for symbol in CRYPTO_SYMBOLS:
+    url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={FINNHUB_KEY}"
+    data = requests.get(url).json()
+
+    name = symbol.replace("BINANCE:", "").replace("USDT", "")
+
+    price = data.get("c")
+    change_sum = data.get("d")
+    change_percent = data.get("dp")
+
+    if price is None or change_sum is None or change_percent is None:
+        crypto_message += f"⚠️ {name}\nНет данных\n\n"
+        continue
+
+    if change_sum > 0:
+        icon = "🟢"
+        action = "Вырос"
+        arrow = "📈"
+        sign = "+"
+    elif change_sum < 0:
+        icon = "🔴"
+        action = "Упал"
+        arrow = "📉"
+        sign = ""
+    else:
+        icon = "⚪"
+        action = "Без изменений"
+        arrow = "➖"
+        sign = ""
+
+    crypto_message += (
+        f"{icon} {name}\n"
+        f"💰 Цена: {price}\n"
+        f"{arrow} {action}: {sign}{change_sum:.2f}\n"
+        f"📊 Процент: {sign}{change_percent:.2f}%\n"
+        f"──────────────\n"
+    )
+
+requests.post(send_url, data={
+    "chat_id": CHAT_ID,
+    "text": crypto_message
+})

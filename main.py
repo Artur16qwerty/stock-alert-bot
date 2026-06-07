@@ -64,10 +64,12 @@ for symbol in SYMBOLS:
 
 send_url = "https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage"
 
-requests.post(send_url, data={
+r = requests.post(send_url, data={
     "chat_id": CHAT_ID,
     "text": message
 })
+
+print("STOCK TELEGRAM:", r.status_code, r.text)
 
 CRYPTO_SYMBOLS = [
     "BINANCE:BTCUSDT",
@@ -116,8 +118,9 @@ for symbol in CRYPTO_SYMBOLS:
         f"📊 Процент: {sign}{change_percent:.2f}%\n"
         f"──────────────\n"
     )
-
-requests.post(send_url, data={
+r = requests.post(send_url, data={
     "chat_id": CHAT_ID,
     "text": crypto_message
 })
+
+print("CRYPTO TELEGRAM:", r.status_code, r.text)

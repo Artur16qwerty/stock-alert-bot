@@ -5,11 +5,7 @@ TELEGRAM_TOKEN = os.environ["8801940769:AAFbZTgouG5x0v7a3RMq2s4GRIciXAbAAwk"]
 CHAT_ID = os.environ["8362317084"]
 FINNHUB_KEY = os.environ["d8i9cepr01qm63bapa5gd8i9cepr01qm63bapa60"]
 
-SYMBOLS = {
-    "TSLA": 5,
-    "NVDA": 5,
-    "AAPL": 5,
-}
+SYMBOLS = {"TSLA": 5,"NVDA": 5,"AAPL": 5,}
 
 def send_message(text):
     url = "https://api.telegram.org/bot" + TELEGRAM_TOKEN + "/sendMessage"
